@@ -1,8 +1,15 @@
+= Set Up Environment
+:username: user45
+:url-peak: https://www.google.com/maps/place/Antora+Peak/@38.3249976,-106.2355882,14z/data=!3m1!4b1!4m5!3m4!1s0x871572433f469bd7:0xd2bdf15e615cd269!8m2!3d38.3249994!4d-106.2180786!5m1!1e4 
+
+{username}
+{url-peak}[This URL] was complicated, but a page attribute came to our rescue! 
+
 Before anything let’s log in our OpenShift cluster.
 
 [source,bash,role=execute]
 ----
-oc login --insecure-skip-tls-verify -u %username% -p %ocp_password% --server=https://%KUBERNETES_SERVICE_HOST%:%KUBERNETES_SERVICE_PORT%
+oc login --insecure-skip-tls-verify -u {{username}} -p %ocp_password% --server=https://%KUBERNETES_SERVICE_HOST%:%KUBERNETES_SERVICE_PORT%
 ----
 
 Did you type the command in yourself? If you did, click on the command
@@ -16,8 +23,8 @@ Now let’s create a project to deploy our knative services (ksvc).
 
 [source,bash,role="execute"]
 ----
-oc new-project %username%-tutorial
-oc new-project %username%-smcp
+oc new-project {username}-tutorial
+oc new-project {username}-smcp
 ----
 
 *Installing the OpenShift Service Mesh Control Plane*
@@ -43,7 +50,7 @@ https://docs.openshift.com/container-platform/%OC_VERSION%/service_mesh/service_
 but for the sake of simplicity just follow these simple steps.
 
 . Navigate to *Operators* → *Installed Operators*. If necessary, select
-*%username%-smcp* from the *Project* menu. You may have to wait a few
+*{username}-smcp* from the *Project* menu. You may have to wait a few
 moments for the Operators to be copied to the new project.
 . Click the *Red Hat OpenShift Service Mesh Operator*. Under *Provided
 APIs*, the Operator provides links to create two resource types:
@@ -73,7 +80,7 @@ basic-install   9/9     InstallSuccessful   default    v1.1      17h
 
 [source,bash,role="execute"]
 ----
-oc get smcp -n %username%-smcp
+oc get smcp -n {username}-smcp
 ----
 
 
@@ -99,7 +106,7 @@ prometheus-6dff867c97-gr2n5              2/2     Running            0          2
 
 [source,bash,role="execute"]
 ----
-oc get pods -n %username%-smcp
+oc get pods -n {username}-smcp
 ----
 
 *Creating the Red Hat OpenShift Service Mesh member roll*
@@ -115,14 +122,14 @@ the *same project as the ServiceMeshControlPlane*_
 . Navigate to *Operators* → *Installed Operators*.
 . Click the *Project* menu and choose the project where your
 *ServiceMeshControlPlane* is deployed from the list, it should be
-*%username%-smcp*.
+*{username}-smcp*.
 . Click the *Red Hat OpenShift Service Mesh Operator*.
 . Click the *All Instances* tab.
 . Click *Create New*, and then select *Istio Service Mesh Member Roll*.
 . On the *Create Service Mesh Member Roll* page, modify the YAML to add
 your projects as members. You can add any number of projects, but a
 project can only belong to one ServiceMeshMemberRoll resource. Add
-*%username%-tutorial*
+*{username}-tutorial*
 . Click Create to save the Service Mesh Member Roll.
 
 [source,yaml]
@@ -131,28 +138,28 @@ apiVersion: maistra.io/v1
 kind: ServiceMeshMemberRoll
 metadata:
   name: default
-  namespace: %username%-smcp
+  namespace: {username}-smcp
 spec:
   members:
-    - %username%-tutorial
+    - {username}-tutorial
 ----
 
 *Installing the sample application we’re going to use in this tutorial*
 
 [source,bash,role="execute"]
 ----
-oc create -n %username%-tutorial -f /opt/app-root/workshop/content/k8s/curl.yaml 
-oc create -n %username%-tutorial -f /opt/app-root/workshop/content/k8s/customer.yaml
-oc create -n %username%-tutorial -f /opt/app-root/workshop/content/k8s/gateway.yaml
-oc create -n %username%-tutorial -f /opt/app-root/workshop/content/k8s/preference.yaml
-oc create -n %username%-tutorial -f /opt/app-root/workshop/content/k8s/recommendation.yaml
+oc create -n {username}-tutorial -f /opt/app-root/workshop/content/k8s/curl.yaml 
+oc create -n {username}-tutorial -f /opt/app-root/workshop/content/k8s/customer.yaml
+oc create -n {username}-tutorial -f /opt/app-root/workshop/content/k8s/gateway.yaml
+oc create -n {username}-tutorial -f /opt/app-root/workshop/content/k8s/preference.yaml
+oc create -n {username}-tutorial -f /opt/app-root/workshop/content/k8s/recommendation.yaml
 ----
 
 Let's decorate the application to make it more readable from the topology view.
 
 [source,bash,role="execute"]
 ----
-oc project %username%-tutorial && \
+oc project {username}-tutorial && \
 oc label deployment/curl app.openshift.io/runtime=load-balancer --overwrite=true && \
 oc label deployment/customer-v1 app.openshift.io/runtime=quarkus --overwrite && \
 oc label deployment/preference-v1 app.openshift.io/runtime=quarkus --overwrite && \
@@ -176,5 +183,5 @@ running this command:
 
 [source,bash,role="execute"]
 ----
-oc project %username%-tutorial
+oc project {username}-tutorial
 ----

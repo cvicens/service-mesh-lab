@@ -66,7 +66,7 @@ and then choose
 * Last 1m
 * Every 10s
 
-image:images/kiali-graph-1.png[Kiali Graph showing configuration]
+image:kiali-graph-1.png[Kiali Graph showing configuration]
 
 You should now see the application graph showing traffic being created by our
 script generating load. The traffic will flow from the Service Mesh ingress
@@ -75,7 +75,7 @@ recommendation service. The request percentage will show _100%_ on each edge
 except within the recommendation service where the traffic should be split
 evenly across all three versions.
 
-image:images/kiali-graph-2.png[Kiali Graph showing application traffic]
+image:kiali-graph-2.png[Kiali Graph showing application traffic]
 
 === Kiali's View of Jaeger Distributed Tracing
 
@@ -107,18 +107,18 @@ hand navigation and then choose
 
 and finally press the _Search_ button.
 
-image:images/kiali-tracing-1.png[Kiali Tracing showing configuration]
+image:kiali-tracing-1.png[Kiali Tracing showing configuration]
 
 You should now see a list of the 20 most recent invocations of the customer service.
 
-image:images/kiali-tracing-2.png[Kiali Tracing showing invocations]
+image:kiali-tracing-2.png[Kiali Tracing showing invocations]
 
 Select one of the invocations to see more information. The graph should now
 show a hierarchy of the invocations with those spans highlighted in _red_
 automatically captured by the Service Mesh proxy, both client and server
 side, and the remainder provided by the application.
 
-image:images/kiali-tracing-3.png[Kiali Tracing showing detailed invocation]
+image:kiali-tracing-3.png[Kiali Tracing showing detailed invocation]
 
 Each span can be expanded to show more contextual information captured as part of the tracing.
 

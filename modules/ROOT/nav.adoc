@@ -1,5 +1,5 @@
 * xref:intro.adoc[Workshop Overview]
-* xref:setup-environment.adoc[Setup Environment]
+* xref:setup-environment.adoc[Set Up Environment]
 * xref:kiali.adoc[Observing the Service Mesh using Kiali]
 * xref:routing.adoc[Routing within the Service Mesh]
 * xref:mtls.adoc[Mutual TLS]

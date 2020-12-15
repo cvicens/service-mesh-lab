@@ -5,7 +5,10 @@ content:
   sources:
   - url: .
     branches: main
+asciidoc:
+  attributes:
+    username: user45
 ui:
   bundle:
-    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/master/raw/build/ui-bundle.zip?job=bundle-stable
+    url: /Users/cvicensa/Projects/antora/atarazana-ui-default/build/ui-bundle.zip
     snapshot: true

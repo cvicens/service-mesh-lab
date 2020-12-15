@@ -80,7 +80,7 @@ make sure you are seeing traffic split roughly _33%_ to each of the
 recommendation endpoints, if you do not see any change then press the
 _refresh_ button in the top right of the Kiali Console.
 
-image:images/kiali-graph-2.png[Kiali showing traffic distributed across three endpoints]
+image:kiali-graph-2.png[Kiali showing traffic distributed across three endpoints]
 
 == Weighted Routing with the Service Mesh
 
@@ -163,7 +163,7 @@ oc apply -f /opt/app-root/workshop/content/src/istiofiles/virtual-service-80-20.
 Switch over to the Kiali console to watch the traffic shifting from the
 original distribution to roughly _80%_ v1 and _20%_ v2.
 
-image:images/routing-graph-2.png[Kiali showing traffic distributed 80/20 across v1 and v2 endpoints]
+image:routing-graph-2.png[Kiali showing traffic distributed 80/20 across v1 and v2 endpoints]
 
 === Modifying the Weighted Routing configuration
 
@@ -381,7 +381,7 @@ Finally switch to the Kiali console and notice all the traffic in the _Graph_
 tab has shifted across to the v2 endpoint. Kiali shows only the normal
 traffic flow for the application and not the mirrored traffic.
 
-image:images/routing-graph-3.png[Kiali showing traffic to the v2 endpoint with no mirrored traffic visible]
+image:routing-graph-3.png[Kiali showing traffic to the v2 endpoint with no mirrored traffic visible]
 
 === Cleaning up
 
