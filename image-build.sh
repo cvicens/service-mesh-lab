@@ -1,0 +1,9 @@
+#!/bin/sh
+
+. ./image-env.sh
+
+WORKSHOP_IMAGE=${REGISTRY}/${WORKSHOP_NAME}:${WORKSHOP_VERSION}
+
+docker build -t ${WORKSHOP_NAME}:${WORKSHOP_VERSION} \
+  --build-arg FROM_IMAGE="${FROM_IMAGE}" .
+docker tag ${WORKSHOP_NAME}:${WORKSHOP_VERSION} ${WORKSHOP_IMAGE}

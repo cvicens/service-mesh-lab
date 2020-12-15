@@ -1,0 +1,1 @@
+oc import-image lab-ossm:4.4 --from=quay.io/cvicensa/lab-ossm:4.4 --confirm --scheduled=true -n lab-ossm

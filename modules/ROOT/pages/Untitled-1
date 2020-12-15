@@ -1,0 +1,17 @@
+openssl s_client \
+  -showcerts \
+  -servername console-openshift-console.apps.cluster-madrid-964d.madrid-964d.example.opentlc.com \
+  -connect console-openshift-console.apps.cluster-madrid-964d.madrid-964d.example.opentlc.com:443 </dev/null 2>/dev/null \
+  | openssl x509 -outform PEM >openshift-wildcard.pem
+
+
+oc create secret generic openshift-wildcard \
+  --from-file=extra.pem=openshift-wildcard.pem \
+  -n user1-smcp
+
+oc set volumes deployment/istio-pilot \
+  --add \
+  --name=extracacerts \
+  --mount-path=/cacerts \
+  --secret-name=openshift-wildcard \
+  --containers=discovery -n user1-smcp
