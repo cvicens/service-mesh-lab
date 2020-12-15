@@ -1,4 +1,5 @@
 = Observing the Service Mesh using Kiali
+include::_attributes.adoc[]
 
 Applications deployed within the Service Mesh are able to take advantage of
 the built-in tracing and monitoring features present in the control plane.
@@ -38,9 +39,9 @@ distributed tracing information.
 To open the Kiali console get the link from the following command. Open it in
 a new tab. Make sure to use HTTPS to access.
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-echo https://$(oc get route -n %username%-smcp kiali -o 'jsonpath={.spec.host}')
+echo https://$(oc get route -n {username}-smcp kiali -o 'jsonpath={.spec.host}')
 ----
 
 When prompted to login use the same username and password you used to access OpenShift.
@@ -50,7 +51,7 @@ When prompted to login use the same username and password you used to access Ope
 Before we take a look at the Kiali console lets first generate some load on
 the Service Mesh. Let's execute the following in terminal 2 (the lower terminal)
 
-[source,bash,role="execute-2"]
+[source,bash,role="execute-2",subs="verbatim,attributes"]
 ----
 bash /opt/app-root/workshop/content/scripts/curl_customer_quiet.sh
 ----
@@ -60,7 +61,7 @@ bash /opt/app-root/workshop/content/scripts/curl_customer_quiet.sh
 Within the Kiali UI select the _Graph_ option from the left hand navigation
 and then choose
 
-* Namespace: %username%-tutorial
+* Namespace: {username}-tutorial
 * Versioned app graph
 * Requests percentage
 * Last 1m
@@ -85,13 +86,13 @@ transactions, performance and latency, root cause analysis, and more.
 Kiali has the capability to expose a view of Jager Distributed Tracing. This
 involves the use of an `iframe`. As you saw when you logged into Kiali, you
 had to accept self-signed certificates and allow Kiali to use your user
-(`%username%`) permissions to talk to OpenShift. Becuase Kiali is exposing
+(`{username}`) permissions to talk to OpenShift. Becuase Kiali is exposing
 Jaeger via an `iframe`, you first need to visit Jaeger to accept the
 self-signed certificates and grant it permissions.
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-echo https://$(oc get route -n %username%-smcp jaeger -o 'jsonpath={.spec.host}')
+echo https://$(oc get route -n {username}-smcp jaeger -o 'jsonpath={.spec.host}')
 ----
 
 Open this URL in another browser tab, accept all certificates and, when
@@ -102,8 +103,8 @@ have Kiali open.
 Within the Kiali UI select the _Distributed Tracing_ option from the left
 hand navigation and then choose
 
-* Namespace: %username%-tutorial
-* Service: %username%-tutorial -> customer
+* Namespace: {username}-tutorial
+* Service: {username}-tutorial -> customer
 
 and finally press the _Search_ button.
 

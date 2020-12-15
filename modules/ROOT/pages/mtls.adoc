@@ -1,4 +1,5 @@
 = Mutual TLS
+include::_attributes.adoc[]
 
 Mutual authentication or two-way authentication refers to two parties
 authenticating each other at the same time, being a default mode of
@@ -15,9 +16,9 @@ communication between services in the mesh.
 Before continuing, make sure you only have the `customer` _Virtual Service_
 and the `recommendation` _Destination Rule_:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc get virtualservice,destinationrule -n %username%-tutorial
+oc get virtualservice,destinationrule -n {username}-tutorial
 ----
 
 You will see something like:
@@ -33,9 +34,9 @@ destinationrule.networking.istio.io/recommendation   recommendation   38m
 
 If you had accidentally deleted the `DestinationRule`, you can recreate it with the following command:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc apply -f /opt/app-root/workshop/content/src/istiofiles/destination-rule.yml -n %username%-tutorial
+oc apply -f /opt/app-root/workshop/content/src/istiofiles/destination-rule.yml -n {username}-tutorial
 ----
 
 [#enablemtls]
@@ -45,7 +46,7 @@ control of the service mesh.
 
 Start by generating load in the background:
 
-[source,bash,role="execute-2"]
+[source,bash,role="execute-2",subs="verbatim,attributes"]
 ----
 bash /opt/app-root/workshop/content/scripts/curl_customer_preference_quiet.sh
 ----
@@ -53,7 +54,7 @@ bash /opt/app-root/workshop/content/scripts/curl_customer_preference_quiet.sh
 Examine the traffic between the "external" pod and the customer services and
 the preference service by running the load once in the upper terminal:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
 bash /opt/app-root/workshop/content/scripts/curl_customer_preference.sh
 ----
@@ -63,7 +64,7 @@ _Kiali’s Graph_
 Within the Kiali UI select the Graph option from the left hand navigation and
 then choose:
 
-* Namespace: %username%-tutorial
+* Namespace: {username}-tutorial
 * Versioned app graph
 * Requests percentage
 * Last 1m
@@ -78,9 +79,9 @@ image::images/mtls_initial.png[]
 
 Now configure preference to use mutual TLS policy. 
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc apply -f /opt/app-root/workshop/content/src/istiofiles/authentication-enable-tls.yml -n %username%-tutorial 
+oc apply -f /opt/app-root/workshop/content/src/istiofiles/authentication-enable-tls.yml -n {username}-tutorial 
 ----
 
 The Policy just created can be seen below:
@@ -105,7 +106,7 @@ again. Patience is a virtue.
 
 Try running the load once in the upper terminal:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
 bash /opt/app-root/workshop/content/scripts/curl_customer_preference.sh
 ----
@@ -122,9 +123,9 @@ should be using mutual TLS (and we're not).
 Now, create a destination rule to make communication to customer use mutual
 TLS and run the curl again:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc apply -f /opt/app-root/workshop/content/src/istiofiles/destination-rule-tls.yml -n %username%-tutorial 
+oc apply -f /opt/app-root/workshop/content/src/istiofiles/destination-rule-tls.yml -n {username}-tutorial 
 ----
 
 The yaml just created can be seen below:
@@ -144,7 +145,7 @@ spec:
 
 And now try running the load again in the upper terminal:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
 bash /opt/app-root/workshop/content/scripts/curl_customer_preference.sh
 ----
@@ -185,16 +186,16 @@ try that now.
 
 First, delete the policy we created above.
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc delete policy -n %username%-tutorial preference-mutualtls
+oc delete policy -n {username}-tutorial preference-mutualtls
 ----
 
 Now create a policy using permissive mode. 
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc apply -f /opt/app-root/workshop/content/src/istiofiles/policy-permissive-tls.yml -n %username%-tutorial 
+oc apply -f /opt/app-root/workshop/content/src/istiofiles/policy-permissive-tls.yml -n {username}-tutorial 
 ----
 
 The contents of the file are displayed below:
@@ -215,7 +216,7 @@ spec:
 
 If we try our curl commands again, we notice that this time they both pass:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
 bash /opt/app-root/workshop/content/scripts/curl_customer_preference.sh
 ----
@@ -237,10 +238,10 @@ https://issues.jboss.org/browse/MAISTRA-1000
 
 To cleanup, delete both the policy and destination rule that we created. 
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc delete policy -n %username%-tutorial preference-mutualtls
-oc delete destinationrule -n %username%-tutorial preference-destination-rule
+oc delete policy -n {username}-tutorial preference-mutualtls
+oc delete destinationrule -n {username}-tutorial preference-destination-rule
 ----
 
 You can also stop the load generating script by clicking the lower terminal

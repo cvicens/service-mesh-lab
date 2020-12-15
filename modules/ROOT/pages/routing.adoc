@@ -1,4 +1,5 @@
 = Routing within the Service Mesh
+include::_attributes.adoc[]
 
 One of the advantages of using a Service Mesh is the ability to modify the
 behaviour of your application's traffic without requiring code changes. This
@@ -22,9 +23,9 @@ We also need to check the current Service Mesh configuration is as expected.
 To check the configuration run the following command:
 
 // TODO: figure out what the new version of this is
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc get istio-io -n %username%-tutorial
+oc get istio-io -n {username}-tutorial
 ----
 
 and check for output similar to the following:
@@ -69,7 +70,7 @@ Before we work through some of the routing scenarios we need to first
 generate load on the services. From within a terminal enter the following
 command
 
-[source,bash,role="execute-2"]
+[source,bash,role="execute-2",subs="verbatim,attributes"]
 ----
 bash /opt/app-root/workshop/content/scripts/curl_customer_quiet.sh
 ----
@@ -112,9 +113,9 @@ spec:
 
 To instantiate this `DestinationRule` you can execute the following:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc apply -f /opt/app-root/workshop/content/src/istiofiles/destination-rule.yml -n %username%-tutorial
+oc apply -f /opt/app-root/workshop/content/src/istiofiles/destination-rule.yml -n {username}-tutorial
 ----
 
 NOTE: We will be using this DestinationRule for the remainder of the examples
@@ -155,9 +156,9 @@ spec:
 
 To deploy this configuration into the Service Mesh, execute the following command:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc apply -f /opt/app-root/workshop/content/src/istiofiles/virtual-service-80-20.yml -n %username%-tutorial
+oc apply -f /opt/app-root/workshop/content/src/istiofiles/virtual-service-80-20.yml -n {username}-tutorial
 ----
 
 Switch over to the Kiali console to watch the traffic shifting from the
@@ -173,9 +174,9 @@ that service
 
 Switch to the terminal and execute the following command:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc apply -f /opt/app-root/workshop/content/src/istiofiles/virtual-service-20-80.yml -n %username%-tutorial
+oc apply -f /opt/app-root/workshop/content/src/istiofiles/virtual-service-20-80.yml -n {username}-tutorial
 ----
 
 This `VirtualService` is almost identical to the previous one, except that
@@ -186,9 +187,9 @@ console and watch the traffic shift towards to v2 service.
 
 Switch to the terminal and execute the following command
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc delete virtualservice recommendation -n %username%-tutorial
+oc delete virtualservice recommendation -n {username}-tutorial
 ----
 
 The traffic should now return to the default distribution with roughly 33%
@@ -247,14 +248,14 @@ spec:
 To deploy this configuration into the Service Mesh switch to a terminal and
 execute the following command:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc apply -f /opt/app-root/workshop/content/src/istiofiles/routing-canary.yaml -n %username%-tutorial
+oc apply -f /opt/app-root/workshop/content/src/istiofiles/routing-canary.yaml -n {username}-tutorial
 ----
 
 Switch back to the terminal running the load script and press ctrl+c to break out of it. Then, run a script that doesn't suppress output:
 
-[source,bash,role="execute-2"]
+[source,bash,role="execute-2",subs="verbatim,attributes"]
 ----
 bash /opt/app-root/workshop/content/scripts/curl_customer.sh
 ----
@@ -271,10 +272,10 @@ with the appropriate header indicating the request is coming from the Boston
 office. You can press ctrl-c in the lower terminal to stop the script before
 continuing. The following command will execute in the top terminal:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-export INGRESS_GATEWAY=$(oc get route -n %username%-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
-curl -H "user-location: Boston" http://${INGRESS_GATEWAY}/
+export INGRESS_GATEWAY=$(oc get route -n {username}-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
+curl -H "user-location: Boston" http://$\{INGRESS_GATEWAY\}/
 ----
 
 Note the response from the above command is returned from the v2 endpoint.
@@ -285,9 +286,9 @@ from the v1 endpoint.
 
 Switch to the terminal and execute the following command:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc delete virtualservice recommendation -n %username%-tutorial
+oc delete virtualservice recommendation -n {username}-tutorial
 ----
 
 The traffic should now return to the default distribution with roughly 33%
@@ -343,7 +344,7 @@ Before deploying this configuration we need to restart the silent load
 script. Make sure that you are not running any other scripts in the lower
 terminal by pressing ctrl-c, then, you will execute the following:
 
-[source,bash,role="execute-2"]
+[source,bash,role="execute-2",subs="verbatim,attributes"]
 ----
 bash /opt/app-root/workshop/content/scripts/curl_customer_long.sh
 ----
@@ -351,7 +352,7 @@ bash /opt/app-root/workshop/content/scripts/curl_customer_long.sh
 Now on Kiali, 
 
 - Go to Workloads section.
-- Choose Namespace: %username%-tutorial
+- Choose Namespace: {username}-tutorial
 - Select "recommendation-v3" deployment
 - Click on logs
 - Scroll to the bottom
@@ -365,9 +366,9 @@ both scripts running while we walk through this example.
 To deploy this configuration into the Service Mesh switch to a terminal and
 execute the following command:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc apply -f /opt/app-root/workshop/content/src/istiofiles/routing-mirroring.yaml -n %username%-tutorial
+oc apply -f /opt/app-root/workshop/content/src/istiofiles/routing-mirroring.yaml -n {username}-tutorial
 ----
 
 Look at the terminal running the load script and you will notice the
@@ -390,9 +391,9 @@ keys to terminate the script.
 
 Then execute the following command:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc delete virtualservice recommendation -n %username%-tutorial
+oc delete virtualservice recommendation -n {username}-tutorial
 ----
 
 The traffic should now return to the default distribution with roughly 33%

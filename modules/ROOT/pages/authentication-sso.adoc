@@ -1,24 +1,24 @@
 
+include::_attributes.adoc[]
 
-
-[source,bash,role="execute"]
+[source,bash,role="execute",subs="verbatim,attributes"]
 ----
 oc process \
   -f https://raw.githubusercontent.com/keycloak/keycloak-containers/master/openshift-examples/keycloak-https.json \
   -p APPLICATION_NAME=keycloak \
   -p KEYCLOAK_USER=admin \
   -p KEYCLOAK_PASSWORD=admin \
-  -p NAMESPACE=%username%-tutorial \
-  | oc create -n %username%-tutorial -f -
+  -p NAMESPACE={username}-tutorial \
+  | oc create -n {username}-tutorial -f -
 
 oc set image deploymentconfig/keycloak keycloak=quay.io/keycloak/keycloak:10.0.1
 ----
 
 Let's decorate the deployment.
 
-[source,bash,role="execute"]
+[source,bash,role="execute",subs="verbatim,attributes"]
 ----
-oc label dc/keycloak app.openshift.io/runtime=sso --overwrite=true -n %username%-tutorial
+oc label dc/keycloak app.openshift.io/runtime=sso --overwrite=true -n {username}-tutorial
 ----
 
 image:keycloak-decorate.png[SSO Icon]
@@ -75,12 +75,12 @@ image:keycloak-assign-role.png[Assign role]
 
 If you have set id and password as suggested you should be able to generate an access_token executing the next command:
 
-[source,bash,role="execute"]
+[source,bash,role="execute",subs="verbatim,attributes"]
 ----
 export TOKEN_JSON=$(curl \
   -sk \
   --data "username=jason&password=mysecretpassword&grant_type=password&client_id=istio" \
-  https://secure-keycloak-%username%-tutorial.%cluster_subdomain%/auth/realms/customer/protocol/openid-connect/token \
+  https://secure-keycloak-{username}-tutorial.{cluster_subdomain}/auth/realms/customer/protocol/openid-connect/token \
   | jq -r '.access_token | split(".") | .[1]' | base64 -d)
 
 echo $TOKEN_JSON | jq .
@@ -88,14 +88,14 @@ echo $TOKEN_JSON | jq .
 
 We need to fix a couple of things here. The *audience* of the token is *“account”*, but we don't want to just check if audience is account as in may example out there.
 
-[source,bash,role="execute"]
+[source,bash,role="execute",subs="verbatim,attributes"]
 ----
 echo $TOKEN_JSON | jq .aud
 ----
 
 The other thing we want to fix is that Istio (at least with the version 1.1.7 or Red Hat Service Mesh 1.0.9) cannot handle nexted attributes... so we have to flatten this structure surfacing roles.
 
-[source,bash,role="execute"]
+[source,bash,role="execute",subs="verbatim,attributes"]
 ----
 echo $TOKEN_JSON | jq .realm_access.roles
 ----
@@ -110,12 +110,12 @@ WARNING: XYZ suggests that replaceing the complete value of the attribute aud (a
 
 Let's get a new token and check audience.
 
-[source,bash,role="execute"]
+[source,bash,role="execute",subs="verbatim,attributes"]
 ----
 export TOKEN_JSON=$(curl \
   -sk \
   --data "username=jason&password=mysecretpassword&grant_type=password&client_id=istio" \
-  https://secure-keycloak-%username%-tutorial.%cluster_subdomain%/auth/realms/customer/protocol/openid-connect/token \
+  https://secure-keycloak-{username}-tutorial.{cluster_subdomain}/auth/realms/customer/protocol/openid-connect/token \
   | jq -r '.access_token | split(".") | .[1]' | base64 -d)
 
 echo $TOKEN_JSON | jq .aud
@@ -131,12 +131,12 @@ image:keycloak-role-mapper.png[Role mapper]
 
 Let's get a new token and check audience.
 
-[source,bash,role="execute"]
+[source,bash,role="execute",subs="verbatim,attributes"]
 ----
 export TOKEN_JSON=$(curl \
   -sk \
   --data "username=jason&password=mysecretpassword&grant_type=password&client_id=istio" \
-  https://secure-keycloak-%username%-tutorial.%cluster_subdomain%/auth/realms/customer/protocol/openid-connect/token \
+  https://secure-keycloak-{username}-tutorial.{cluster_subdomain}/auth/realms/customer/protocol/openid-connect/token \
   | jq -r '.access_token | split(".") | .[1]' | base64 -d)
 
 echo $TOKEN_JSON | jq .roles
@@ -148,21 +148,21 @@ As you can see, the access token has a new attribute *roles* with offline_access
 
 Let's get the information related to the....
 
-[source,bash,role="execute"]
+[source,bash,role="execute",subs="verbatim,attributes"]
 ----
-export JWKS=$(curl -ks https://secure-keycloak-%username%-tutorial.%cluster_subdomain%/auth/realms/customer/protocol/openid-connect/certs)
+export JWKS=$(curl -ks https://secure-keycloak-{username}-tutorial.{cluster_subdomain}/auth/realms/customer/protocol/openid-connect/certs)
 ----
 
 Let's create the Policy enforcing... instead of `jwksUri` we'll use `jwks`...
 
-[source,bash,role="execute"]
+[source,bash,role="execute",subs="verbatim,attributes"]
 ----
-cat << EOF | oc create -n %username%-tutorial -f -
+cat << EOF | oc create -n {username}-tutorial -f -
 apiVersion: authentication.istio.io/v1alpha1
 kind: Policy
 metadata:
   name: customer-jwt
-  namespace: %username%-tutorial
+  namespace: {username}-tutorial
 spec:
   targets:
     - name: customer
@@ -170,20 +170,20 @@ spec:
     - jwt:
         audiences:
           - customer
-        issuer: 'https://secure-keycloak-%username%-tutorial.%cluster_subdomain%/auth/realms/customer'
-        jwks: '${JWKS}'
+        issuer: 'https://secure-keycloak-{username}-tutorial.{cluster_subdomain}/auth/realms/customer'
+        jwks: '$\{JWKS\}'
   principalBinding: USE_ORIGIN
 EOF
 ----
 
-[source,bash,role="execute"]
+[source,bash,role="execute",subs="verbatim,attributes"]
 ----
-cat << EOF | oc create -n %username%-tutorial -f -
+cat << EOF | oc create -n {username}-tutorial -f -
 apiVersion: authentication.istio.io/v1alpha1
 kind: Policy
 metadata:
   name: customer-jwt
-  namespace: %username%-tutorial
+  namespace: {username}-tutorial
 spec:
   targets:
     - name: customer
@@ -191,21 +191,21 @@ spec:
     - jwt:
         audiences:
           - customer
-        issuer: 'https://secure-keycloak-%username%-tutorial.%cluster_subdomain%/auth/realms/customer'
-        jwksUri: 'https://secure-keycloak-%username%-tutorial.%cluster_subdomain%/auth/realms/customer/protocol/openid-connect/certs'
+        issuer: 'https://secure-keycloak-{username}-tutorial.{cluster_subdomain}/auth/realms/customer'
+        jwksUri: 'https://secure-keycloak-{username}-tutorial.{cluster_subdomain}/auth/realms/customer/protocol/openid-connect/certs'
   principalBinding: USE_ORIGIN
 EOF
 ----
 
-[source,bash,role="execute"]
+[source,bash,role="execute",subs="verbatim,attributes"]
 ----
 export TOKEN=$(curl \
   -sk \
   --data "username=jason&password=mysecretpassword&grant_type=password&client_id=istio" \
-  https://secure-keycloak-%username%-tutorial.%cluster_subdomain%/auth/realms/customer/protocol/openid-connect/token \
+  https://secure-keycloak-{username}-tutorial.{cluster_subdomain}/auth/realms/customer/protocol/openid-connect/token \
   | jq -r '.access_token')
 
-curl -H "Authorization: Bearer $TOKEN" http://istio-ingressgateway-%username%-smcp.%cluster_subdomain%/ ; echo
+curl -H "Authorization: Bearer $TOKEN" http://istio-ingressgateway-{username}-smcp.{cluster_subdomain}/ ; echo
 ----
 
 

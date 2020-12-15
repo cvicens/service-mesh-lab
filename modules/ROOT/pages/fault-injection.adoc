@@ -1,4 +1,5 @@
-# Fault Injection
+= Fault Injection
+include::_attributes.adoc[]
 
 Chaos engineering involves intentionally designing failure into components to
 ensure that the larger system is resilient. This can involve HTTP errors or
@@ -6,17 +7,17 @@ network delays or even killing components all together. Understanding failure
 scenarios is a critical aspect of microservices architecture (aka distributed
 computing). Istio provides mechanisms to perform fault injection.
 
-## What we will learn in this module
+== What we will learn in this module
 This module will provide instruction on how to introduce service failures and
 delays as a part of understanding, testing, and designing microservices.
 
-## Before Starting
+== Before Starting
 You only need the `customer` Virtual Service and Gateway, but if you have the
 `recommendation` Destination Rule from other exercises, that's OK:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc -n %username%-tutorial get istio-io
+oc -n {username}-tutorial get istio-io
 ----
 
 And you should see something like the following:
@@ -42,9 +43,9 @@ In the absence of any traffic management policies or routing rules,
 recommendation v1, v2 and v3 are being randomly load-balanced as that is the
 default behavior in Service Mesh.
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc -n %username%-tutorial get pods -l app=recommendation
+oc -n {username}-tutorial get pods -l app=recommendation
 ----
 
 You will see something like:
@@ -58,16 +59,16 @@ recommendation-v3-5786cd744d-96q79   2/2     Running   0          17h
 
 Then, start running load in the background and bottom terminal:
 
-[source,bash,role="execute-2"]
+[source,bash,role="execute-2",subs="verbatim,attributes"]
 ----
 bash /opt/app-root/workshop/content/scripts/curl_customer_quiet.sh
 ----
 
 Go ahead and create a `DestinationRule` that will inject 503's for approximately 50% of the requests:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc apply -f /opt/app-root/workshop/content/src/istiofiles/virtual-service-recommendation-503.yml -n %username%-tutorial 
+oc apply -f /opt/app-root/workshop/content/src/istiofiles/virtual-service-recommendation-503.yml -n {username}-tutorial 
 ----
 
 You will see something like:
@@ -135,10 +136,10 @@ requests.
 
 Execute the following a few times:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-export INGRESS_GATEWAY=$(oc get route -n %username%-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
-for x in $(seq 1 10); do curl http://${INGRESS_GATEWAY}; done
+export INGRESS_GATEWAY=$(oc get route -n {username}-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
+for x in $(seq 1 10); do curl http://$\{INGRESS_GATEWAY\}; done
 ----
 
 Because Istio has built-in default retries, you are almost guaranteed to not
@@ -153,7 +154,7 @@ Kiali console.
 Within the Kiali UI select the *Graph* option from the left hand navigation
 and then choose:
 
-* Namespace: %username%-tutorial
+* Namespace: {username}-tutorial
 * Versioned app graph
 * Requests percentage
 * Last 1m
@@ -168,9 +169,9 @@ clearer if you click on the line between the two services.
 
 === Clean up
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc delete -f /opt/app-root/workshop/content/src/istiofiles/virtual-service-recommendation-503.yml -n %username%-tutorial 
+oc delete -f /opt/app-root/workshop/content/src/istiofiles/virtual-service-recommendation-503.yml -n {username}-tutorial 
 ----
 
 You will see something like:
@@ -188,7 +189,7 @@ service but a service that is responding slowly, potentially causing a
 cascading failure in your network of services. To see how to inject such a
 delay, take a look at the following YAML:
 
-[source,yaml,subs="+macros,+attributes"]
+[source,yaml,subs="+macros,+attributes",subs="verbatim,attributes"]
 ----
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
@@ -240,9 +241,9 @@ Note that this file creates 2 resources. First, a DestinationRule
 `recommendation` that splits traffic equally between v1, v2, and v3 but also
 introduces a 7s delay for 50% of the requests.
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc apply -f /opt/app-root/workshop/content/src/istiofiles/virtual-service-recommendation-delay.yml -n %username%-tutorial 
+oc apply -f /opt/app-root/workshop/content/src/istiofiles/virtual-service-recommendation-delay.yml -n {username}-tutorial 
 ----
 
 You will see something like:
@@ -255,10 +256,10 @@ virtualservice.networking.istio.io/recommendation created
 You will notice that 50% of requests to the customer endpoint now have a
 delay:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-export INGRESS_GATEWAY=$(oc get route -n %username%-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
-for x in $(seq 1 10); do curl http://${INGRESS_GATEWAY}; done
+export INGRESS_GATEWAY=$(oc get route -n {username}-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
+for x in $(seq 1 10); do curl http://$\{INGRESS_GATEWAY\}; done
 ----
 
 === Kiali's Distributed Tracing
@@ -266,7 +267,7 @@ for x in $(seq 1 10); do curl http://${INGRESS_GATEWAY}; done
 Within the Kiali UI select the *Distributed Tracing* option from the left
 hand navigation and then choose:
 
-* Namespace: %username%-tutorial
+* Namespace: {username}-tutorial
 * Service: recommendation
 * Lookback: Last 1m
 
@@ -281,9 +282,9 @@ the other 50% are in the low ms range.
 
 === Clean up
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc delete -f /opt/app-root/workshop/content/src/istiofiles/virtual-service-recommendation-delay.yml -n %username%-tutorial 
+oc delete -f /opt/app-root/workshop/content/src/istiofiles/virtual-service-recommendation-delay.yml -n {username}-tutorial 
 ----
  
 You will see something like:

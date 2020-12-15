@@ -1,15 +1,11 @@
 = Set Up Environment
-:username: user45
-:url-peak: https://www.google.com/maps/place/Antora+Peak/@38.3249976,-106.2355882,14z/data=!3m1!4b1!4m5!3m4!1s0x871572433f469bd7:0xd2bdf15e615cd269!8m2!3d38.3249994!4d-106.2180786!5m1!1e4 
-
-{username}
-{url-peak}[This URL] was complicated, but a page attribute came to our rescue! 
+include::_attributes.adoc[]
 
 Before anything let’s log in our OpenShift cluster.
 
-[source,bash,role=execute]
+[source,bash,role=execute,subs="verbatim,attributes"]
 ----
-oc login --insecure-skip-tls-verify -u {{username}} -p %ocp_password% --server=https://%KUBERNETES_SERVICE_HOST%:%KUBERNETES_SERVICE_PORT%
+oc login --insecure-skip-tls-verify -u {username} -p {password} --server=https://$\{KUBERNETES_SERVICE_HOST\}:$\{KUBERNETES_SERVICE_PORT\}
 ----
 
 Did you type the command in yourself? If you did, click on the command
@@ -21,7 +17,7 @@ another window, hold down the shift key when you click on the command.
 
 Now let’s create a project to deploy our knative services (ksvc).
 
-[source,bash,role="execute"]
+[source,bash,role="execute",subs="verbatim,attributes"]
 ----
 oc new-project {username}-tutorial
 oc new-project {username}-smcp
@@ -32,7 +28,7 @@ oc new-project {username}-smcp
 
 NOTE: Although you don’t have to do it yourself, it’s important to
 note that the OpenShift Service Mesh Operator needs to be
-https://docs.openshift.com/container-platform/%OC_VERSION%/service_mesh/service_mesh_install/installing-ossm.html#ossm-control-plane-deploy-operatorhub_installing-ossm[installed]
+https://docs.openshift.com/container-platform/latest/service_mesh/service_mesh_install/installing-ossm.html#ossm-control-plane-deploy-operatorhub_installing-ossm[installed]
 cluster-wide (on all namespaces on the cluster), this is the default by
 the way.
 
@@ -78,7 +74,7 @@ basic-install   9/9     InstallSuccessful   default    v1.1      17h
 ....
 
 
-[source,bash,role="execute"]
+[source,bash,role="execute",subs="verbatim,attributes"]
 ----
 oc get smcp -n {username}-smcp
 ----
@@ -104,7 +100,7 @@ prometheus-6dff867c97-gr2n5              2/2     Running            0          2
 ....
 
 
-[source,bash,role="execute"]
+[source,bash,role="execute",subs="verbatim,attributes"]
 ----
 oc get pods -n {username}-smcp
 ----
@@ -146,7 +142,7 @@ spec:
 
 *Installing the sample application we’re going to use in this tutorial*
 
-[source,bash,role="execute"]
+[source,bash,role="execute",subs="verbatim,attributes"]
 ----
 oc create -n {username}-tutorial -f /opt/app-root/workshop/content/k8s/curl.yaml 
 oc create -n {username}-tutorial -f /opt/app-root/workshop/content/k8s/customer.yaml
@@ -157,7 +153,7 @@ oc create -n {username}-tutorial -f /opt/app-root/workshop/content/k8s/recommend
 
 Let's decorate the application to make it more readable from the topology view.
 
-[source,bash,role="execute"]
+[source,bash,role="execute",subs="verbatim,attributes"]
 ----
 oc project {username}-tutorial && \
 oc label deployment/curl app.openshift.io/runtime=load-balancer --overwrite=true && \
@@ -181,7 +177,7 @@ oc annotate deployment customer-v1 app.openshift.io/connects-to=preference-v1
 If you have already created the project you can always set it as default
 running this command:
 
-[source,bash,role="execute"]
+[source,bash,role="execute",subs="verbatim,attributes"]
 ----
 oc project {username}-tutorial
 ----

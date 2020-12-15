@@ -1,4 +1,6 @@
 = Authentication with JWT and RBAC
+include::_attributes.adoc[]
+
 In addition to enforcing security with mutual TLS, Red Hat OpenShift Service
 Mesh can also perform origin authentication, or _end-user authentication_ at
 the request level using JSON Web Token (JWT).
@@ -12,9 +14,9 @@ authorization feature to provide access control for services in the mesh.
 You only need the `customer` Virtual Service and Gateway, but if you have the
 `recommendation` Destination Rule from other exercises, that's OK:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc -n %username%-tutorial get istio-io
+oc -n {username}-tutorial get istio-io
 ----
 
 And you should see something like the following:
@@ -43,10 +45,10 @@ between all services without authentication.
 
 Execute the following:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-export INGRESS_GATEWAY=$(oc get route -n %username%-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
-for x in $(seq 1 10); do curl http://${INGRESS_GATEWAY}; done
+export INGRESS_GATEWAY=$(oc get route -n {username}-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
+for x in $(seq 1 10); do curl http://$\{INGRESS_GATEWAY\}; done
 ----
 
 You will see something like:
@@ -86,17 +88,17 @@ spec:
 
 And then run the following to deploy the policy:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc apply -f /opt/app-root/workshop/content/src/istiofiles/policy-jwt.yaml -n %username%-tutorial 
+oc apply -f /opt/app-root/workshop/content/src/istiofiles/policy-jwt.yaml -n {username}-tutorial 
 ----
 
 After about 1 minute, let's run the curl again:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-export INGRESS_GATEWAY=$(oc get route -n %username%-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
-for x in $(seq 1 10); do curl http://${INGRESS_GATEWAY}; done
+export INGRESS_GATEWAY=$(oc get route -n {username}-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
+for x in $(seq 1 10); do curl http://$\{INGRESS_GATEWAY\}; done
 ----
 
 You will see: 
@@ -108,9 +110,9 @@ Origin authentication failed.
 If not, wait a few more moments and try again. If you want more details, run
 the following:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-curl -sv http://${INGRESS_GATEWAY}
+curl -sv http://$\{INGRESS_GATEWAY\}
 ----
 
 You'll notice a `401 Unauthorized` error message. This is because the service
@@ -121,7 +123,7 @@ mesh is now enforcing authentication, and your curl is not authenticated (no val
 Within the Kiali UI select the *Graph* option from the left hand navigation
 and then choose
 
-* Namespace: %username%-tutorial
+* Namespace: {username}-tutorial
 * Versioned app graph
 * Requests percentage
 * Last 1m
@@ -140,9 +142,9 @@ token that goes with it. The following commands will fetch a valid token and
 then use that token in the `Authorization` header of the curl request.
 Execute it several times so that Kiali gets enough traffic to graph:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-export INGRESS_GATEWAY=$(oc get route -n %username%-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
+export INGRESS_GATEWAY=$(oc get route -n {username}-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
 TOKEN=$(curl https://raw.githubusercontent.com/istio/istio/release-1.1/security/tools/jwt/samples/demo.jwt -s)
 for x in $(seq 1 10); do curl --header "Authorization: Bearer $TOKEN" $INGRESS_GATEWAY -s; done
 ----
@@ -168,9 +170,9 @@ before the errors from previous runs disappear:
 [#cleanup-1]
 === Clean Up
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc delete -n %username%-tutorial policy.authentication.istio.io/jwt-example
+oc delete -n {username}-tutorial policy.authentication.istio.io/jwt-example
 ----
 
 == Service Mesh Role Based Access Control (RBAC)
@@ -190,23 +192,23 @@ metadata:
 spec:
   mode: 'ON_WITH_INCLUSION'
   inclusion:
-    namespaces: ["%username%-tutorial"]
+    namespaces: ["{username}-tutorial",subs="verbatim,attributes"]
 ----
 
 Run this command to deploy the RBAC:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-sed "s/CHANGEIT/$JUPYTERHUB_USER-tutorial/" /opt/app-root/workshop/content/src/istiofiles/authorization-enable-rbac.yml | oc apply -n %username%-tutorial -f -
+sed "s/CHANGEIT/$JUPYTERHUB_USER-tutorial/" /opt/app-root/workshop/content/src/istiofiles/authorization-enable-rbac.yml | oc apply -n {username}-tutorial -f -
 ----
 
 Now RBAC is enabled on your mesh. Wait a few moments and then run the curl to
 test the RBAC:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-export INGRESS_GATEWAY=$(oc get route -n %username%-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
-for x in $(seq 1 10); do curl http://${INGRESS_GATEWAY}; done
+export INGRESS_GATEWAY=$(oc get route -n {username}-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
+for x in $(seq 1 10); do curl http://$\{INGRESS_GATEWAY\}; done
 ----
 
 
@@ -218,10 +220,10 @@ RBAC: access denied
 
 For more specific details, execute one curl:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-export INGRESS_GATEWAY=$(oc get route -n %username%-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
-curl http://${INGRESS_GATEWAY} -sv
+export INGRESS_GATEWAY=$(oc get route -n {username}-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
+curl http://$\{INGRESS_GATEWAY\} -sv
 ----
 
 Notice that you get a `403 Forbidden` HTTP response.
@@ -231,7 +233,7 @@ Notice that you get a `403 Forbidden` HTTP response.
 Within the Kiali UI select the *Graph* option from the left hand navigation
 and then choose:
 
-* Namespace: %username%-tutorial
+* Namespace: {username}-tutorial
 * Versioned app graph
 * Requests percentage
 * Last 1m
@@ -263,11 +265,11 @@ metadata:
   name: service-viewer
 spec:
   rules:
-  - services: ["*"]
-    methods: ["GET"]
+  - services: ["*",subs="verbatim,attributes"]
+    methods: ["GET",subs="verbatim,attributes"]
     constraints:
     - key: "destination.labels[app]"
-      values: ["customer", "recommendation", "preference"]
+      values: ["customer", "recommendation", "preference",subs="verbatim,attributes"]
 ---
 apiVersion: "rbac.istio.io/v1alpha1"
 kind: ServiceRoleBinding
@@ -288,17 +290,17 @@ there.
 
 Run this command to deploy the role and role binding:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc apply -f /opt/app-root/workshop/content/src/istiofiles/namespace-rbac-policy.yml -n %username%-tutorial 
+oc apply -f /opt/app-root/workshop/content/src/istiofiles/namespace-rbac-policy.yml -n {username}-tutorial 
 ----
 
 Wait a few moments and then send some requests by executing the following a few times:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-export INGRESS_GATEWAY=$(oc get route -n %username%-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
-for x in $(seq 1 10); do curl http://${INGRESS_GATEWAY}; done
+export INGRESS_GATEWAY=$(oc get route -n {username}-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
+for x in $(seq 1 10); do curl http://$\{INGRESS_GATEWAY\}; done
 ----
 
 You will see something like:
@@ -321,7 +323,7 @@ is "any" user, so it works.
 Within the Kiali UI select the *Graph* option from the left hand navigation
 and then choose:
 
-* Namespace: %username%-tutorial
+* Namespace: {username}-tutorial
 * Versioned app graph
 * Requests percentage
 * Last 1m
@@ -336,9 +338,9 @@ Note the 100% success rate.
 [#cleanup-2]
 == Clean Up
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc delete -n %username%-tutorial rbacconfig.rbac.istio.io/default servicerole.rbac.istio.io/service-viewer servicerolebinding.rbac.istio.io/bind-service-viewer
+oc delete -n {username}-tutorial rbacconfig.rbac.istio.io/default servicerole.rbac.istio.io/service-viewer servicerolebinding.rbac.istio.io/bind-service-viewer
 ----
 
 You will see something like:

@@ -1,4 +1,5 @@
 = Rate-Limiting/Policy
+include::_attributes.adoc[]
 
 Istio provides policy features to enforce rate limits on traffic to a
 destination, allowing you to mitigate naughty, misbehaving or faulty
@@ -12,9 +13,9 @@ a particular service in terms of requests per time period.
 You only need the `customer` Virtual Service and Gateway, but if you have the
 `recommendation` Destination Rule from other exercises, that's OK:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc -n %username%-tutorial get istio-io
+oc -n {username}-tutorial get istio-io
 ----
 
 And you should see something like the following:
@@ -41,21 +42,21 @@ reflected. Be patient here!
 
 First, make sure that you have a `DestinationRule` for the `recommendation` service:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc apply -f /opt/app-root/workshop/content/src/istiofiles/destination-rule.yml -n %username%-tutorial 
+oc apply -f /opt/app-root/workshop/content/src/istiofiles/destination-rule.yml -n {username}-tutorial 
 ----
 
 The following YAML will limit the number of concurrent requests hitting _v2_ of the `recommendation` service:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-sed -e "s/USERNAME/$JUPYTERHUB_USER/" /opt/app-root/workshop/content/src/istiofiles/recommendation_rate_limit.yml | oc apply -n %username%-smcp -f -
+sed -e "s/USERNAME/$JUPYTERHUB_USER/" /opt/app-root/workshop/content/src/istiofiles/recommendation_rate_limit.yml | oc apply -n {username}-smcp -f -
 ----
 
 The YAML looks like the following:
 
-[source,yaml,subs="+macros,+attributes"]
+[source,yaml,subs="+macros,+attributes",subs="verbatim,attributes"]
 ----
 ---
 apiVersion: config.istio.io/v1alpha2
@@ -83,9 +84,9 @@ metadata:
   name: requestcount
 spec:
   dimensions:
-    source: request.headers["x-forwarded-for"] | "unknown"
-    destination: destination.labels["app"] | destination.service.name | "unknown"
-    destinationVersion: destination.labels["version"] | "unknown"
+    source: request.headers["x-forwarded-for",subs="verbatim,attributes"] | "unknown"
+    destination: destination.labels["app",subs="verbatim,attributes"] | destination.service.name | "unknown"
+    destinationVersion: destination.labels["version",subs="verbatim,attributes"] | "unknown"
 ---
 apiVersion: config.istio.io/v1alpha2
 kind: QuotaSpec
@@ -104,10 +105,10 @@ metadata:
 spec:
   quotaSpecs:
   - name: request-count
-    namespace: %username%-smcp
+    namespace: {username}-smcp
   services:
   - name: recommendation
-    namespace: %username%-tutorial
+    namespace: {username}-tutorial
     #  - service: '*'  # Uncomment this to bind *all* services to request-count
 ---
 apiVersion: config.istio.io/v1alpha2
@@ -116,7 +117,7 @@ metadata:
   name: quota
 spec:
   # quota only applies if you are not logged in.
-  # match: match(request.headers["cookie"], "user=*") == false
+  # match: match(request.headers["cookie",subs="verbatim,attributes"], "user=*") == false
   actions:
   - handler: handler.memquota
     instances:
@@ -140,10 +141,10 @@ rule.config.istio.io/quota created
 Throw some requests at customer by executing the following several times (at
 least 3) in succession:
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-export INGRESS_GATEWAY=$(oc get route -n %username%-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
-for x in $(seq 1 10); do curl http://${INGRESS_GATEWAY}; done
+export INGRESS_GATEWAY=$(oc get route -n {username}-smcp istio-ingressgateway -o 'jsonpath={.spec.host}')
+for x in $(seq 1 10); do curl http://$\{INGRESS_GATEWAY\}; done
 ----
 
 You should see some 429 errors indicating the quota has been exhausted.
@@ -173,7 +174,7 @@ customer => Error: 503 - preference => Error: 429 - RESOURCE_EXHAUSTED:Quota is 
 Within the Kiali UI select the *Graph* option from the left hand navigation
 and then choose
 
-* Namespace: %username%-tutorial
+* Namespace: {username}-tutorial
 * Versioned app graph
 * Requests percentage
 * Last 1m
@@ -187,9 +188,9 @@ Note the rate limited failure rate from preference to recommendation.
 
 === Clean up
 
-[source,bash,role="execute-1"]
+[source,bash,role="execute-1",subs="verbatim,attributes"]
 ----
-oc delete -n %username%-smcp -f /opt/app-root/workshop/content/src/istiofiles/recommendation_rate_limit.yml
+oc delete -n {username}-smcp -f /opt/app-root/workshop/content/src/istiofiles/recommendation_rate_limit.yml
 ----
 
 You will see something like:
