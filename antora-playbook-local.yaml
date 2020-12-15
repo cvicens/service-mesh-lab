@@ -1,0 +1,11 @@
+site:
+  title: Service Mesh Lab
+  start_page: service-mesh-lab::intro.adoc
+content:
+  sources:
+  - url: .
+    branches: main
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/master/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true

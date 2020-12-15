@@ -381,6 +381,7 @@ object(`DestinationRule` called `recommendation`) to be updated.
 
 You will see something like:
 
+[source,bash,role="execute-2"]
 ----
 destinationrule.networking.istio.io/recommendation configured
 ----
@@ -396,9 +397,9 @@ bash /opt/app-root/workshop/content/scripts/loadtest_quiet.sh
 
 If you then look at the Kiali graph:
 
-[#img-cicuit] []
+[#img-cicuit]
 .Kiali Graph Fail Fast w/Circuit Breaking
-image:images/circuit-graph.png[]
+image:circuit-graph.png[Circuit Breaker]
 
 When looking at request percentage, you will see a teeny tiny percentage of
 requests hitting v2. That's the circuit breaker being opened whenever Istio

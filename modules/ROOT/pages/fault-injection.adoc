@@ -161,7 +161,7 @@ and then choose:
 
 [#img-503]
 .Kiali Graph Showing 503 Failures
-image::images/503.png[]
+image::images/503.png[503 Failures]
 
 Note the 50% failure rate from preference to recommendation. It will be
 clearer if you click on the line between the two services.
@@ -272,9 +272,9 @@ hand navigation and then choose:
 
 and finally press the *Search* button.
 
-[#img-503]
+[#img-delays]
 .Kiali Graph Showing Delays
-image::images/delay.png[]
+image::images/delay.png[Kiali Graph Showing Delays]
 
 Note that 50% of the traces are slightly over the artificial 7s delay while
 the other 50% are in the low ms range.

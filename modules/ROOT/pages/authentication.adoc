@@ -165,7 +165,7 @@ If you look back at Kiali's graph, you will note the 100% success rate from
 the authenticated end-user to customer. It may take a refresh cycle or two
 before the errors from previous runs disappear:
 
-[#cleanup]
+[#cleanup-1]
 === Clean Up
 
 [source,bash,role="execute-1"]
@@ -173,10 +173,10 @@ before the errors from previous runs disappear:
 oc delete -n %username%-tutorial policy.authentication.istio.io/jwt-example
 ----
 
-= Service Mesh Role Based Access Control (RBAC)
+== Service Mesh Role Based Access Control (RBAC)
 
 [#enabling-rbac]
-== Enabling RBAC
+=== Enabling RBAC
 
 `RbacConfig` objects are used to enable and configure Authorization in the
 service mesh. Take a look at the following YAML:
@@ -249,7 +249,7 @@ to any service. At this point we have enabled RBAC but we have no roles and
 are not supplying any auth, so we are _denied by default_.
 
 [#grant-access]
-== Granting Access
+=== Granting Access
 
 Let's grant access to any user to any service of our mesh (`customer`,
 `preference`, `recommendation`) only and only if the communication is an HTTP
@@ -333,7 +333,7 @@ image::images/kiali-graph-2.png[]
 
 Note the 100% success rate.
 
-[#cleanup]
+[#cleanup-2]
 == Clean Up
 
 [source,bash,role="execute-1"]
@@ -349,7 +349,7 @@ servicerolebinding.rbac.istio.io "bind-service-viewer" deleted
 rbacconfig.rbac.istio.io "default" deleted
 ----
 
-= What we learned in this module
+== What we learned in this module
 Red Hat OpenShift Service Mesh provides the capability to authenticate
 end-users via JWT and to enforce service RBAC. Kiali provides the mechanism
 to visialize end-user authentication and RBAC failures.

@@ -60,7 +60,7 @@ configuration parameters.
 control plane resources the Operator created and configured. Wait until
 all the components are installed correctly, as in the next picture.
 
-image:./images/service-mesh-control-plane-install-success.png[Successful Installation]
+image:./service-mesh-control-plane-install-success.png[Successful Installation]
 
 
 WARNING: By running the next command you should get `InstallSuccessful`
