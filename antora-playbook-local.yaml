@@ -1,10 +1,12 @@
 site:
   title: Service Mesh Lab
   start_page: service-mesh-lab::intro.adoc
+  
 content:
   sources:
   - url: .
     branches: main
+
 asciidoc:
   attributes:
     username: user1
