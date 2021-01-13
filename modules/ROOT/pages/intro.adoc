@@ -42,50 +42,18 @@ These components combined together make up the Red Hat OpenShift Service Mesh.
 == Conventions
 You will see various code and command blocks throughout these exercises. Some of
 the command blocks can be executed directly while others will require modification,
-of the command before execution. If you see a command block with a red border
-(see below), the command will require slight modification.
+of the command before execution.
 
-[source,none,role="copypaste copypaste-warning",subs="verbatim,attributes"]
-----
-some command to modify
-----
-
-If you hover over the command block above and left-click, it should
-automatically highlight all the text to make for easier copying.
-
-Most command blocks support executing with a click. Which terminal the
-command block executes in is pre-determined and will be indicated to you. For
-example, command blocks with looping scripts will be executed in the lower
-terminal like below:
-
-[source,bash,role="execute-2",subs="verbatim,attributes"]
-----
-for i in 1 2 3; do echo "hello $i"; done
-----
-
-For non-terminating loops, you will have to click the lower terminal and then
-press Ctrl+C to terminate the program. For example, try executing the next
-code block:
-
-[source,bash,role="execute-2",subs="verbatim,attributes"]
-----
-echo "A load generating script is running in the next step. Ctrl+C to stop"
-while :;do echo "this won't print" &> /dev/null ; done
-----
-
-For ordinary commands, we will be using the upper terminal:
-
-[source,bash,role="execute-1",subs="verbatim,attributes"]
-----
-echo "Hello World"
-----
+If you hover over the command block on the rigth upper corner you'll find a clip board 
+icon, click on it to copy the contents.
 
 == Getting Started
 The terminals are running in a container inside the same OpenShift cluster
 where you will be using the service mesh. That container has many utilities
-pre-installed, including the `oc` CLI. The Service Mesh control plane is
-already deployed with several application components in an OpenShift
-Container Platform 4 environment.
+pre-installed, including the `oc` CLI. 
+
+If `Terminal` is enabled, on the top navigation bar click on it, log in with your 
+credentials and run this command.
 
 [source,bash,role="execute-1",subs="verbatim,attributes"]
 ----

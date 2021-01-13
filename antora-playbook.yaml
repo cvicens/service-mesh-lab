@@ -1,7 +1,7 @@
 site:
   title: Service Mesh Lab
   start_page: service-mesh-lab::intro.adoc
-  
+
 content:
   sources:
   - url: https://github.com/cvicens/service-mesh-lab.git
@@ -11,7 +11,11 @@ asciidoc:
   attributes:
     username: user1
     password: openshift
-    cluster_subdomain: apps.9898.opentlc.com
+    cluster_subdomain: apps.cluster-2036.2036.example.opentlc.com
+    page-cluster_subdomain: apps.cluster-2036.2036.example.opentlc.com
+    page-enable_terminal: true
+    console_app: console-openshift-console
+    page-console_app: console-openshift-console
 ui:
   bundle:
     url: https://github.com/atarazana/atarazana-ui-default/releases/download/v0.1.0/ui-bundle.zip

@@ -9,6 +9,8 @@
 * xref:rate-limiting.adoc[Rate Limiting/Policy]
 * xref:fault-injection.adoc[Fault Injection]
 
+* xref:small-demo.adoc[Small Demo]
+
 //* Lists
 //** xref:lists/ordered-list.adoc[Ordered List]
 //** xref:lists/unordered-list.adoc[Unordered List]

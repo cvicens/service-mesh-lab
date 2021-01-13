@@ -253,7 +253,7 @@ execute the following command:
 oc apply -f /opt/app-root/workshop/content/src/istiofiles/routing-canary.yaml -n {username}-tutorial
 ----
 
-Switch back to the terminal running the load script and press ctrl+c to break out of it. Then, run a script that doesn't suppress output:
+Switch back to the terminal running the load script and press kbd:[Ctrl,C] to break out of it. Then, run a script that doesn't suppress output:
 
 [source,bash,role="execute-2",subs="verbatim,attributes"]
 ----
@@ -386,7 +386,7 @@ image:routing-graph-3.png[Kiali showing traffic to the v2 endpoint with no mirro
 
 === Cleaning up
 
-Switch back to the terminal monitoring the v3 console and press the ctrl+c
+Switch back to the terminal monitoring the v3 console and press the kbd:[Ctrl,C]
 keys to terminate the script.
 
 Then execute the following command:

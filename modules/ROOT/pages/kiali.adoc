@@ -126,7 +126,7 @@ Each span can be expanded to show more contextual information captured as part o
 === Cleaning up
 
 Click into the lower terminal that is still silently executing the script we
-used to generate load. Press the ctrl+c keys to terminate the script.
+used to generate load. Press the kbd:[Ctrl,C] keys to terminate the script.
 
 == What we learned in this module
 

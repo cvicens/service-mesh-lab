@@ -1,7 +1,7 @@
 site:
   title: Service Mesh Lab
   start_page: service-mesh-lab::intro.adoc
-  
+
 content:
   sources:
   - url: .
@@ -9,10 +9,14 @@ content:
 
 asciidoc:
   attributes:
+    git_raw_url: https://raw.githubusercontent.com/cvicens/service-mesh-lab 
     username: user1
     password: openshift
-    cluster_subdomain: apps.9898.opentlc.com
-    
+    cluster_subdomain: apps.cluster-2036.2036.example.opentlc.com
+    page-cluster_subdomain: apps.cluster-2036.2036.example.opentlc.com
+    page-enable_terminal: true
+    console_app: console-openshift-console
+    page-console_app: console-openshift-console
 ui:
   bundle:
     url: /Users/cvicensa/Projects/antora/atarazana-ui-default/build/ui-bundle.zip

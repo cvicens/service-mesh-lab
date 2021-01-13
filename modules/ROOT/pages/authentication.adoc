@@ -33,7 +33,7 @@ destinationrule.networking.istio.io/recommendation   recommendation   36m
 ----
 
 If you have any scripts running in the bottom terminal, make sure to click
-there and then press ctrl+c to terminate them.
+there and then press kbd:[Ctrl,C] to terminate them.
 
 [#enablingauthentication]
 == Enabling User-End Authentication

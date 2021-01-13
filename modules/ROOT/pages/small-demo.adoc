@@ -1,0 +1,229 @@
+= Small Demo
+include::_attributes.adoc[]
+
+Start as a cluster-admin and show dependencies; operators: Elastic Search, Jaeger and Kiali.
+
+Just run some commands and check it all works...
+
+== Deploy Control Plane
+
+Click con `Console` and log in with **{username} / {password}** then go to menu:Home[Projects]. Click on btn:[Create Project]. Name your project `{username}-tutorial` click on btn:[Create]
+
+[source,none,subs="verbatim,attributes"]
+----
+{username}-tutorial
+----
+
+Click con `Terminal` and log in with **{username} / {password}** if necessary.
+
+Now from the terminal window create project `{username}-smcp`.
+
+[source,bash,role="execute-1",subs="verbatim,attributes"]
+----
+oc new-project {username}-smcp
+----
+
+Click on `Console`, make sure you're on menu:Developer[+Add] view and select project `{username}-smcp` at the top. 
+
+Then click on menu:Add[Operator Backed] then look for `Control Plane` in the filter text field and click on `Istio Service Mesh Control Plane` and then on btn:[Create].
+
+Show the different possibilities, leave the defaults and click on btn:[Create].
+
+In the `Terminal` type this command to see the status of the installation.
+
+[source,bash,role="execute-1",subs="verbatim,attributes"]
+----
+oc get smcp -n {username}-smcp
+----
+
+You should see this at some point.
+
+[source,bash,role="execute-1",subs="verbatim,attributes"]
+----
+NAME    READY   STATUS            PROFILES      VERSION   AGE
+basic   9/9     ComponentsReady   ["default"]   2.0.0.2   88s
+----
+
+Have a look to the pods...
+
+[source,bash,role="execute-1",subs="verbatim,attributes"]
+----
+oc get pods -n user1-smcp
+----
+
+You should see this at some point.
+
+[source,bash,role="execute-1",subs="verbatim,attributes"]
+----
+NAME                                   READY   STATUS    RESTARTS   AGE
+grafana-7946bffd4f-qsbkx               2/2     Running   0          3m33s
+istio-egressgateway-6dd878b7bf-svvbq   1/1     Running   0          3m34s
+istio-ingressgateway-d78b9c46b-8mgzp   1/1     Running   0          3m34s
+istiod-basic-5ddf49b798-wvrvh          1/1     Running   0          4m2s
+jaeger-7766dd4798-5xjzs                2/2     Running   0          3m34s
+kiali-6685b57db6-gzmbw                 1/1     Running   0          3m5s
+prometheus-7ffb4d4bc5-4jc4p            3/3     Running   0          3m49s
+----
+
+
+Click on `Console`, make sure you're on menu:Developer[+Add] view and select project `{username}-smcp` at the top. 
+
+Then click on menu:Add[Operator Backed] then look for `member roll` in the filter text field and click on `Istio Service Mesh Member Roll` and then on btn:[Create].
+
+Click on `Yaml view` and use the next yaml and click on btn:[Create].
+
+[source,yaml,role="execute-1",subs="verbatim,attributes"]
+----
+apiVersion: maistra.io/v1
+kind: ServiceMeshMemberRoll
+metadata:
+  name: default
+  namespace: {username}-smcp
+spec:
+  members:
+    - {username}-tutorial
+----
+
+*Installing the sample application we’re going to use in this tutorial*
+
+[source,bash,role="execute",subs="verbatim,attributes"]
+----
+oc create -n {username}-tutorial -f {git_raw_url}/main/modules/ROOT/k8s/curl.yaml
+oc create -n {username}-tutorial -f {git_raw_url}/main/modules/ROOT/k8s/customer.yaml
+oc create -n {username}-tutorial -f {git_raw_url}/main/modules/ROOT/k8s/gateway.yaml
+oc create -n {username}-tutorial -f {git_raw_url}/main/modules/ROOT/k8s/preference.yaml
+oc create -n {username}-tutorial -f {git_raw_url}/main/modules/ROOT/k8s/recommendation.yaml
+----
+
+Open `Console` and have a look at `Topology` in project `{username}-tutorial`.
+
+Let's decorate the application to make it more readable from the topology view.
+
+[source,bash,role="execute",subs="verbatim,attributes"]
+----
+oc project {username}-tutorial && \
+oc label deployment/curl app.openshift.io/runtime=load-balancer --overwrite=true && \
+oc label deployment/customer-v1 app.openshift.io/runtime=quarkus --overwrite && \
+oc label deployment/preference-v1 app.openshift.io/runtime=quarkus --overwrite && \
+oc label deployment/recommendation-v1 app.openshift.io/runtime=quarkus --overwrite && \
+oc label deployment/recommendation-v2 app.openshift.io/runtime=quarkus --overwrite && \
+oc label deployment/recommendation-v3 app.openshift.io/runtime=quarkus --overwrite && \
+oc label deployment customer-v1 app.kubernetes.io/part-of=customers --overwrite && \
+oc label deployment preference-v1 app.kubernetes.io/part-of=customers --overwrite && \
+oc label deployment recommendation-v1 app.kubernetes.io/part-of=customers --overwrite && \
+oc label deployment recommendation-v2 app.kubernetes.io/part-of=customers --overwrite && \
+oc label deployment recommendation-v3 app.kubernetes.io/part-of=customers --overwrite && \
+oc annotate deployment preference-v1 app.openshift.io/connects-to=recommendation-v1,recommendation-v2,recommendation-v3 && \
+oc annotate deployment customer-v1 app.openshift.io/connects-to=preference-v1
+----
+
+=== Opening the Kiali console
+
+To open the Kiali console get the link from the following command. Open it in
+a new tab. Make sure to use HTTPS to access.
+
+[source,bash,role="execute-1",subs="verbatim,attributes"]
+----
+echo https://$(oc get route -n {username}-smcp kiali -o 'jsonpath={.spec.host}')
+----
+
+When prompted to login use the same username and password you used to access OpenShift.
+
+=== Generating load
+
+Before we take a look at the Kiali console lets first generate some load on
+the Service Mesh. Let's execute the following in terminal 2 (the lower terminal)
+
+[source,bash,role="execute-2",subs="verbatim,attributes"]
+----
+export INGRESS_GATEWAY=$(oc get route istio-ingressgateway -n {username}-smcp -o 'jsonpath={.spec.host}')
+while :; do sleep 0.2; curl http://$\{INGRESS_GATEWAY\} ; done
+----
+
+=== Weighted Routing with the Service Mesh
+
+Do this from Kiali.
+
+Open Graph and select `{username}-tutorial`.
+
+View percentages and security.
+
+Go to menu:Services[recommendation > Actions > Request Routing] Split v1: 80% v2: 20%  v3: 0%
+
+Check the result.
+
+We need `customer` and `curl` pod names.
+
+[source,bash,role="execute-2",subs="verbatim,attributes"]
+----
+export CURL_POD=$(oc get pods -n {username}-tutorial -l app=curl | grep curl | awk '{ print $1}' )
+export CUSTOMER_POD=$(oc get pods -n {username}-tutorial -l app=customer | grep customer | awk '{ print $1}' )
+----
+
+Generate load in the background silently.
+
+[source,bash,role="execute-2",subs="verbatim,attributes"]
+----
+while :; do 
+# echo "Executing curl in curl pod"
+oc exec -n {username}-tutorial $CURL_POD -- curl -s http://preference:8080 > /dev/null && sleep 0.5
+
+# echo "Executing curl in customer pod"
+oc exec -n {username}-tutorial $CUSTOMER_POD -c customer -- curl -s http://preference:8080 > /dev/null && sleep 0.5
+done
+----
+
+And test with this, you'll get a 200 in both cases.
+
+Curl from outside the mesh.
+
+[source,bash,role="execute-2",subs="verbatim,attributes"]
+----
+oc exec -n {username}-tutorial $CURL_POD -- curl -sv http://preference:8080 
+----
+
+Curl from inside the mesh.
+
+[source,bash,role="execute-2",subs="verbatim,attributes"]
+----
+oc exec -n {username}-tutorial $CUSTOMER_POD -c customer -- curl -sv http://preference:8080 
+----
+
+Apply this...
+
+[source,bash,role="execute-2",subs="verbatim,attributes"]
+----
+kubectl apply -f - <<EOF
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: preference-mutualtls
+spec:
+  selector:
+    matchLabels:
+      app: preference
+  mtls:
+    mode: STRICT
+EOF
+----
+
+And test with this, you'll get a 200 only from inside the mesh.
+
+Curl from outside the mesh.
+
+[source,bash,role="execute-2",subs="verbatim,attributes"]
+----
+oc exec -n {username}-tutorial $CURL_POD -- curl -sv http://preference:8080 
+----
+
+Curl from inside the mesh.
+
+[source,bash,role="execute-2",subs="verbatim,attributes"]
+----
+oc exec -n {username}-tutorial $CUSTOMER_POD -c customer -- curl -sv http://preference:8080 
+----
+
+[source,bash,role="execute-2",subs="verbatim,attributes"]
+----
+oc delete peerauthentication preference-mutualtls
+----

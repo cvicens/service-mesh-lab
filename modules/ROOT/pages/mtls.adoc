@@ -75,7 +75,7 @@ You will notice that there are requests originating from "unknown". That is
 the pod inside which the `curl` command was executed by the script. The
 script also executes a `curl` from within the `customer` pod.
 
-image::images/mtls_initial.png[]
+image::mtls_initial.png[]
 
 Now configure preference to use mutual TLS policy. 
 
